@@ -18,6 +18,7 @@ class tavel_name_form(Form):
     # age = IntegerRangeField('Cantidad (€)', default=90000)
 
 class travel_questionnaire_form(Form):
+    name = StringField('Tu nombre:', validators=[validators.required()])
     question1 = TextAreaField('Primera pregunta para la pipol:', validators=[validators.required()])
 
 
@@ -43,10 +44,21 @@ def home():
         return render_template('home.html', form=form, link=None)
 
 
-@app.route('/<travel_name>')
-def show_user_profile(travel_name):
-    # show the user profile for that user
-    return 'Nombre del viaje: %s' % travel_name
+@app.route('/<travel_name>', methods=['GET', 'POST'])
+def show_questionnaire(travel_name):
+    form = travel_questionnaire_form(request.form)
+    flash('Nombre del viaje: %s' % travel_name)
+
+    if request.method == 'POST':
+        name = request.form['name']
+        q1 = request.form['question1']
+
+        if form.validate():
+            print(name, q1)
+            # TODO guardar en base de datos
+            pass
+
+    return render_template('questionnaire.html', form=form)
 
 
 if __name__ == "__main__":

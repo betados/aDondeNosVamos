@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "a" "b">
+<html>
+    <head>
+        <title>¿A donde nos vamos? - Cuestionario</title>
+    </head>
+        <body>
+
+            <form action="" method="post">
+                {{ form.csrf }}
+
+                <div class="input text">
+                    {{ form.name.label }} {{ form.name }}
+                </div>
+                <div class="input text">
+                    {{ form.question1.label }} {{ form.question1 }}
+                </div>
+
+
+                <div class="input submit">
+                    <input type="submit" value="Enviar" />
+                </div>
+            </form>
+            <p><form action="/">
+                <input type="submit" value="<- Home" />
+            </form><p>
+
+        </body>
+</html>
