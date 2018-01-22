@@ -4,15 +4,19 @@
         <title>¿A donde nos vamos? - Cuestionario</title>
     </head>
         <body>
-
+            <h2>Cuestionario del viaje {{ travel_name}}</h2>
             <form action="" method="post">
+                <!-- TODO hacer que redirija a una página de envio satisfactorio y gracias-->
                 {{ form.csrf }}
 
                 <div class="input text">
-                    {{ form.name.label }} {{ form.name }}
+                    {{ form.user_name.label }} {{ form.user_name }}
                 </div>
                 <div class="input text">
                     {{ form.question1.label }} {{ form.question1 }}
+                </div>
+                <div class="input text">
+                    {{ form.question2.label }} {{ form.question2 }}
                 </div>
 
 
@@ -20,6 +24,11 @@
                     <input type="submit" value="Enviar" />
                 </div>
             </form>
+            <p><form action="">
+                ¿Eres la administradora?
+                <a href="{{ url}}?admin=True">Ver resultados</a>
+                <input type="submit" value="Ver resultados" />
+            </form><p>
             <p><form action="/">
                 <input type="submit" value="<- Home" />
             </form><p>
