@@ -101,6 +101,7 @@ def show_questionnaire(url):
 
     admin = request.args.get('admin', type=bool)
     if admin:
+        # TODO hacer que pida la contraseña para acceder a esto
         conn = sqlite3.connect('dataBases/viajes.db')
         c = conn.cursor()
         values = (travel_name,)
