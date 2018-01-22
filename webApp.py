@@ -13,8 +13,8 @@ app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
 class tavel_name_form(Form):
     travel_name = StringField('Nombre de tu viaje:', validators=[validators.required()])
-    password = PasswordField('password:  ', validators=[validators.required()])
-    password2 = PasswordField('password2:', validators=[validators.required()])
+    password = PasswordField('Contraseña:  ', validators=[validators.required()])
+    password2 = PasswordField('Repite la contraseña:', validators=[validators.required()])
 
 
 class travel_questionnaire_form(Form):
