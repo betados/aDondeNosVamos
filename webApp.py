@@ -27,14 +27,11 @@ def createUrl():
     url = ''
     for _ in range(9):
         code = random.randrange(36)
-        print(code)
         if code in range(10):
             code += 48
         elif code in range(10, 36):
             code += 87
-        print(chr(code))
         url += chr(code)
-    print(url)
     return url
 
 
@@ -92,7 +89,6 @@ def show_questionnaire(url):
     c.execute('SELECT name FROM viajes WHERE url=?', values)
     try:
         travel_name = c.fetchone()[0]
-        print(travel_name)
     except:
         return render_template('404.html')
 
