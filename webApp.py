@@ -116,6 +116,7 @@ def show_questionnaire(url):
 
         if form.validate():
             saveAnswer(url, travel_name, user_name, q1 + ' - ' + q2)
+            return render_template('success.html')
 
     return render_template('questionnaire.html', form=form, travel_name=travel_name, url=url)
 

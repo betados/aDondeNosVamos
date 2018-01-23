@@ -2,12 +2,22 @@
 data.db
 viajes.db*
 
+# AUTOCONVERT
+lugares_prohibidos.txt
+requisitos.txt
+resultado.txt
+viajes.py
+viajes.txt
+
+
 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+
 
 # C extensions
 *.so
