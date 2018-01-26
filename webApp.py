@@ -36,7 +36,7 @@ def createUrl():
 
 
 def createTravel(name, password, url):
-    conn = sqlite3.connect('dataBases/viajes.db')
+    conn = sqlite3.connect('/home/viajes/mysite/dataBases/viajes.db')
     c = conn.cursor()
     values = (name, password, url)
     c.execute('create table if not exists viajes(name, password, url)')
@@ -45,7 +45,7 @@ def createTravel(name, password, url):
 
 
 def saveAnswer(url, travel_name, user_name, respuesta):
-    conn = sqlite3.connect('dataBases/viajes.db')
+    conn = sqlite3.connect('/home/viajes/mysite/dataBases/viajes.db')
     c = conn.cursor()
     values = (url, travel_name, user_name, respuesta)
     c.execute('create table if not exists respuestas(url, travel_name, user_name, respuesta)')
@@ -83,7 +83,7 @@ def home():
 
 @app.route('/<url>', methods=['GET', 'POST'])
 def show_questionnaire(url):
-    conn = sqlite3.connect('dataBases/viajes.db')
+    conn = sqlite3.connect('/home/viajes/mysite/dataBases/viajes.db')
     c = conn.cursor()
     values = (url,)
     c.execute('SELECT name FROM viajes WHERE url=?', values)
@@ -98,7 +98,7 @@ def show_questionnaire(url):
     admin = request.args.get('admin', type=bool)
     if admin:
         # TODO hacer que pida la contraseña para acceder a esto
-        conn = sqlite3.connect('dataBases/viajes.db')
+        conn = sqlite3.connect('/home/viajes/mysite/dataBases/viajes.db')
         c = conn.cursor()
         values = (travel_name,)
         c.execute('SELECT * FROM respuestas WHERE travel_name=?', values)
