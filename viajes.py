@@ -181,7 +181,7 @@ def Lista_De_Viajes_Cumple_Requisitos(V_Viajes, V_Requisitos):
     return V_Viajes_Cumplen_Requisitos
 
 
-def Cuantas_Personas_Han_Estado(V_Viaje, V_Lugares_Prohibidos):
+def Cuantas_Personas_Han_Estado (V_Viaje, V_Lugares_Prohibidos):
     V_Personas = 0
     for V_Lugar_Prohibido in V_Lugares_Prohibidos:
         if V_Viaje.Lugar == V_Lugar_Prohibido.Lugar:
