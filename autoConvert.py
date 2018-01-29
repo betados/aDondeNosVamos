@@ -8,8 +8,8 @@ def changePaths(name):
         lines = f.readlines()
         for line in lines:
             i = line.find(cadenaS)
-            if i != -1:
-                line = line[:i] + cadenaR + line[i+len(cadenaS):]
+            if line[:i+len(cadenaS)] == cadenaS:
+                line = cadenaR + line[i+len(cadenaS):]
             out.write(line)
     out.close()
     f.close()
@@ -17,10 +17,9 @@ def changePaths(name):
     os.rename('temp.txt', name)
 
 
-os.system("git checkout feature/autoConvert")
+os.system("git checkout deploy")
 os.system("git merge develop")
 changePaths('webApp.py')
-os.system("git add .")
+os.system("git add webApp.py")
 os.system('git commit --amend -m ""')
-
-# os.system('git push origin rama')
+# os.system('git push origin develop')
