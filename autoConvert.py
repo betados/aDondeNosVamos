@@ -1,15 +1,15 @@
 import os
 
 def changePaths(name):
-    cadenaS = 'dataBases'
-    cadenaR = '/home/viajes/mysite/dataBases'
+    cadenaS = "'dataBases"
+    cadenaR = "'/home/viajes/mysite/dataBases"
     out = open('temp.txt', 'w')
     with open(name) as f:
         lines = f.readlines()
         for line in lines:
             i = line.find(cadenaS)
-            if line[:i+len(cadenaS)] == cadenaS:
-                line = cadenaR + line[i+len(cadenaS):]
+            if i != -1:
+                line = line[:i] + cadenaR + line[i+len(cadenaS):]
             out.write(line)
     out.close()
     f.close()
