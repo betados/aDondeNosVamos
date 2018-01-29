@@ -24,6 +24,7 @@ class travel_questionnaire_form(Form):
 
 
 def createUrl():
+    """ Creates a random url unique for each travel"""
     url = ''
     for _ in range(9):
         code = random.randrange(36)
