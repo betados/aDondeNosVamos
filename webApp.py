@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, flash, request
 from wtforms import Form, TextAreaField, validators, StringField, PasswordField
 import random
@@ -28,11 +31,13 @@ class tavel_name_form(Form):
 
 class travel_questionnaire_form(Form):
     user_name = StringField('Tu nombre:', validators=[validators.required()])
+
+    origin = TextAreaField('Origen:', validators=[validators.required()],
+                           default='Madrid')
     destinations = TextAreaField('Destinos:', validators=[validators.required()],
                                  # description='destinos separados con ;',
-                              # default='destinos separados con ;')
-                              default='Madrid; Bilbao')
-    question2 = TextAreaField('Segunda pregunta para la pipol:', validators=[validators.required()])
+                                 # default='destinos separados con ;')
+                                 default='Barakaldo; Cádiz')
 
 
 def createUrl():
@@ -65,8 +70,18 @@ def saveAnswer(url, travel_name, user_name, respuesta):
     c.execute('insert into respuestas values (?,?,?,?)', values)
     conn.commit()
 
+def getLatsLongs(places):
+    lats = []
+    longs = []
+    for place in places:
+        lat, lng = getLatLong(place)
+        lats.append(str(lat))
+        longs.append(str(lng))
+
+    return ';'.join(lats), ';'.join(longs)
+
 def getLatLong(place):
-    data = gmaps.geocode(place)
+    data = gmaps.geocode(place, components={'country': 'ES'})
     return data[0]['geometry']['location']['lat'], data[0]['geometry']['location']['lng']
 
 
@@ -129,19 +144,21 @@ def show_questionnaire(url):
     if request.method == 'POST':
         user_name = request.form['user_name']
         destinations = request.form['destinations']
-        q2 = request.form['question2']
+        origin = request.form['origin']
 
         if form.validate():
             saveAnswer(url, travel_name, user_name, destinations)
             destinations = destinations.split(';')
-            lat, long = getLatLong(destinations[0])
-            return render_template('map.html', key=key, lat=lat, long=long)
+            lats, longs = getLatsLongs(destinations)
+            # TODO pasar una lista con todos los destinos
+            return render_template('map.html', key=key, latArray=lats, longArray=longs)
 
     return render_template('questionnaire.html', form=form, travel_name=travel_name, url=url)
 
 @app.route('/map')
 def show_map():
-    return render_template('map.html', key=key, lat=40, long=0)
+    # FIXME esto solo sirve para debuguear
+    return render_template('map.html', key=key, latArray='40.4;43.2;36.5', longArray='-3.7;-2.9;-6.3')
 
 
 
