@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style type="text/css">
+          html, body { height: 100%;  width: 100%;margin: 0; padding: 0; }
+          #map { height: 100%; }
+        </style>
+    </head>
+    <body>
+        <div > <h3>Respuestas guardadas correctamente</h3></div>
+        <p id="latArray" hidden="hidden">{{latArray}}</p>
+        <p id="longArray" hidden="hidden">{{longArray}}</p>
+        <p id="salida" ></p>
+        <div id="map0" style="width:50%;height:400px"></div>
+        <div id="map1" style="width:50%;height:400px"></div>
+        <div id="map2" style="width:50%;height:400px"></div>
+        <div id="map3" style="width:50%;height:400px"></div>
+
+
+        <script type="text/javascript">
+
+            var latArray = document.getElementById("latArray").innerHTML.split(";");
+            var longArray = document.getElementById("longArray").innerHTML.split(";");
+
+            function initMaps(){
+                for (var i = 0; i < latArray.length; i++) {
+                    initMap(latArray[i], longArray[i], i)
+                }
+            }
+
+            function initMap(x, y, i) {
+                var myCenter = new google.maps.LatLng(x, y);
+                var mapCanvas = document.getElementById('map'+i);
+                var mapOptions = {center: myCenter, zoom: 10};
+                var map = new google.maps.Map(mapCanvas, mapOptions);
+                var marker = new google.maps.Marker({
+                    position:myCenter,
+                    animation:google.maps.Animation.BOUNCE
+                    });
+                marker.setMap(map);
+            }
+
+            <!--document.ready(initMaps)-->
+
+        </script>
+        <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key= {{key}} &callback=initMaps">
+        </script>
+    </body>
+</html>

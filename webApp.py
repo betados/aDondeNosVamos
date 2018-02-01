@@ -1,7 +1,12 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, flash, request
 from wtforms import Form, TextAreaField, validators, StringField, PasswordField
 import random
 import sqlite3
+import googlemaps
+import pprint
 
 
 # App config.
@@ -9,6 +14,13 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+
+conn = sqlite3.connect('/home/viajes/mysite/dataBases/data.db')
+c = conn.cursor()
+t = ('mapsKey',)
+c.execute('SELECT value FROM data WHERE name=?', t)
+key = c.fetchone()[0]
+gmaps = googlemaps.Client(key=key)
 
 
 class tavel_name_form(Form):
@@ -19,8 +31,13 @@ class tavel_name_form(Form):
 
 class travel_questionnaire_form(Form):
     user_name = StringField('Tu nombre:', validators=[validators.required()])
-    question1 = TextAreaField('Primera pregunta para la pipol:', validators=[validators.required()])
-    question2 = TextAreaField('Segunda pregunta para la pipol:', validators=[validators.required()])
+
+    origin = TextAreaField('Origen:', validators=[validators.required()],
+                           default='Madrid')
+    destinations = TextAreaField('Destinos:', validators=[validators.required()],
+                                 # description='destinos separados con ;',
+                                 # default='destinos separados con ;')
+                                 default='Barakaldo; Cádiz')
 
 
 def createUrl():
@@ -52,6 +69,20 @@ def saveAnswer(url, travel_name, user_name, respuesta):
     c.execute('create table if not exists respuestas(url, travel_name, user_name, respuesta)')
     c.execute('insert into respuestas values (?,?,?,?)', values)
     conn.commit()
+
+def getLatsLongs(places):
+    lats = []
+    longs = []
+    for place in places:
+        lat, lng = getLatLong(place)
+        lats.append(str(lat))
+        longs.append(str(lng))
+
+    return ';'.join(lats), ';'.join(longs)
+
+def getLatLong(place):
+    data = gmaps.geocode(place, components={'country': 'ES'})
+    return data[0]['geometry']['location']['lat'], data[0]['geometry']['location']['lng']
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -112,14 +143,23 @@ def show_questionnaire(url):
 
     if request.method == 'POST':
         user_name = request.form['user_name']
-        q1 = request.form['question1']
-        q2 = request.form['question2']
+        destinations = request.form['destinations']
+        origin = request.form['origin']
 
         if form.validate():
-            saveAnswer(url, travel_name, user_name, q1 + ' - ' + q2)
-            return render_template('success.html')
+            saveAnswer(url, travel_name, user_name, destinations)
+            destinations = destinations.split(';')
+            lats, longs = getLatsLongs(destinations)
+            # TODO pasar una lista con todos los destinos
+            return render_template('map.html', key=key, latArray=lats, longArray=longs)
 
     return render_template('questionnaire.html', form=form, travel_name=travel_name, url=url)
+
+@app.route('/map')
+def show_map():
+    # FIXME esto solo sirve para debuguear
+    return render_template('map.html', key=key, latArray='40.4;43.2;36.5', longArray='-3.7;-2.9;-6.3')
+
 
 
 if __name__ == "__main__":

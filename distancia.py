@@ -4,10 +4,11 @@
 import googlemaps
 from datetime import datetime
 import sqlite3
+import pprint
 
 
 def getDistance(origen='Madrid', destino='Madrid'):
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('dataBases/data.db')
     c = conn.cursor()
     t = ('mapsKey',)
     c.execute('SELECT value FROM data WHERE name=?', t)
@@ -26,10 +27,26 @@ def getDistance(origen='Madrid', destino='Madrid'):
     # directions_result = gmaps.directions('Madrid', 'Santander, Cantabria', mode="transit", departure_time=now)
     directions_result = gmaps.directions(origen, destino, mode="driving")
 
+
     # print(directions_result[0])
     print('Distancia de', origen, 'a', destino, ':', end=' ')
     print(directions_result[0]['legs'][0]['distance']['text'])
 
-destinos = ['Bilbao', 'Santander, Cantabria', 'Valencia, Comunidad valenciana']
-for destino in destinos:
-    getDistance(origen='Madrid', destino=destino)
+def getDistances(destinos):
+    conn = sqlite3.connect('dataBases/data.db')
+    c = conn.cursor()
+    t = ('mapsKey',)
+    c.execute('SELECT value FROM data WHERE name=?', t)
+    key = c.fetchone()[0]
+    # print(key)
+    gmaps = googlemaps.Client(key=key)
+    distances = gmaps.distance_matrix('Madrid', destinos, mode='transit', transit_routing_preference='fewer_transfers')
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(distances)
+
+destinos = ['Madrid', 'Bilbao', 'Santander, Cantabria', 'Valencia, Comunidad valenciana']
+# for destino in destinos:
+#     getDistance(origen='Madrid', destino=destino)
+getDistances(destinos)
+
+
